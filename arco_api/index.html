@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arco - Admin Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+    <div class="left-panel">
+        <div class="logo">
+            <!-- Replaced the icon with your logo image -->
+            <img src="image/logo.png" alt="Arco Logo" style="width: 70px; height: 70px;">
+        </div>
+        <h2>Arco Admin Dashboard</h2>
+        <p>Manage users with our comprehensive admin panel. Access real-time analytics and system controls.</p>
+    </div>
+
+    <div class="right-panel">
+        <!-- Login Form -->
+        <div id="login-section">
+            <h2>Admin Login Only</h2>
+            <p style="color: #666; text-align: center; margin-bottom: 20px;">
+                This website is restricted to administrators only.
+            </p>
+
+            <div id="alertBox" class="alert"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Admin Username</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" placeholder="Enter admin username" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Admin Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Enter admin password" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+        </div>
+
+        <!-- 2FA Verification Section -->
+        <div id="verification-section" style="display: none;">
+            <div class="verification-container">
+                <div class="verification-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h2>Admin Security Verification</h2>
+                <p id="emailMessage">Verification code sent to your admin email</p>
+
+                <div id="verificationAlert" class="alert"></div>
+
+                <form id="verificationForm">
+                    <div class="code-inputs">
+                        <input type="text" class="code-input" maxlength="1" required>
+                        <input type="text" class="code-input" maxlength="1" required>
+                        <input type="text" class="code-input" maxlength="1" required>
+                        <input type="text" class="code-input" maxlength="1" required>
+                        <input type="text" class="code-input" maxlength="1" required>
+                        <input type="text" class="code-input" maxlength="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="login-btn" id="verify-btn">Verify Code</button>
+                    </div>
+
+                    <div class="text-center">
+                        <p>Didn't receive the code? <a href="#" class="link" id="resend-code">Resend Code</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- CAPTCHA Section -->
+        <div id="captcha-section" style="display: none;">
+            <div class="verification-container">
+                <div class="verification-icon captcha-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h2 class="captcha-title">Admin Security Verification</h2>
+                <p class="captcha-subtitle">Please complete the security check to access admin dashboard</p>
+
+                <div class="captcha-container">
+                    <p>Select the correct code:</p>
+                    <div class="captcha-code" id="captcha-display">1234</div>
+
+                    <div class="captcha-options">
+                        <div class="captcha-option">1234</div>
+                        <div class="captcha-option">5678</div>
+                        <div class="captcha-option">9012</div>
+                    </div>
+                </div>
+
+                <div class="checkbox-container" id="robot-checkbox">
+                    <input type="checkbox" id="not-robot">
+                    <label for="not-robot">I'm not a robot</label>
+                </div>
+
+                <div class="form-group">
+                    <button type="button" class="login-btn" id="verify-captcha-btn" disabled>Verify CAPTCHA</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
