@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Arco Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+<div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Arco Admin</h2>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-item active" data-page="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="menu-item" data-page="users">
+                <i class="fas fa-users"></i>
+                <span>Users</span>
+            </div>
+            <div class="menu-item" data-page="feedback">
+                <i class="fas fa-comment-alt"></i>
+                <span>Feedback</span>
+            </div>
+            <div class="menu-item" id="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <img src="image/logo.png" alt="Logo" class="header-logo">
+            <div class="user-info">
+                <div class="user-avatar">AD</div>
+                <div>
+                    <div style="font-weight: 500;" id="admin-name">Admin User</div>
+                    <div style="font-size: 12px; color: var(--gray);">Administrator</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Content Container -->
+        <div id="page-content">
+            <!-- Dashboard Section (Default) -->
+            <div class="page-section active" id="dashboard-section">
+                <div class="dashboard-stats">
+                    <h3>Dashboard Overview</h3>
+                    <!-- Updated stats-grid with only feedback cards -->
+                    <div class="stats-grid" id="stats-container">
+                        <!-- Feedback Card -->
+                        <div class="stat-card feedback">
+                            <h4>Feedback</h4>
+                            <div class="stat-value" id="total-feedback-count">0</div>
+                            <div class="stat-label">Total Reviews</div>
+                        </div>
+
+                        <!-- New Unread Feedback Card -->
+                        <div class="stat-card unread-feedback">
+                            <h4>Unread Feedback</h4>
+                            <div class="stat-value" id="unread-feedback-count">0</div>
+                            <div class="stat-label">Requires Attention</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Management Section -->
+            <div class="page-section" id="users-section" style="display: none;">
+                <div class="user-management">
+                    <!-- Updated user-management-header without Refresh button -->
+                    <div class="user-management-header">
+                        <h3>User Management</h3>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="filter-btn" id="filter-admin-btn" onclick="filterUsers('admin')">
+                                <i class="fas fa-user-shield"></i> Admin
+                            </button>
+                            <button class="filter-btn" id="filter-user-btn" onclick="filterUsers('user')">
+                                <i class="fas fa-user"></i> User
+                            </button>
+                            <button class="filter-btn" id="filter-archived-btn" onclick="filterUsers('archived')">
+                                <i class="fas fa-archive"></i> Archived
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="users-loading" class="loading">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
+                        <p>Loading users...</p>
+                    </div>
+
+                    <!-- Error State -->
+                    <div id="users-error" class="error" style="display: none;"></div>
+
+                    <!-- Users Table -->
+                    <div id="users-table-container" style="display: none;">
+                        <table class="user-table">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="users-table-body">
+                            <!-- Users will be populated here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feedback Section - Updated with Archive/Restore functionality -->
+            <div class="page-section" id="feedback-section" style="display: none;">
+                <div class="feedback-management">
+                    <div class="user-management-header">
+                        <h3>User Feedback</h3>
+                        <button class="refresh-btn" onclick="loadFeedback()">
+                            <i class="fas fa-sync-alt"></i> Refresh Feedback
+                        </button>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="feedback-loading" class="loading">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
+                        <p>Loading feedback...</p>
+                    </div>
+
+                    <!-- Error State -->
+                    <div id="feedback-error" class="error" style="display: none;"></div>
+
+                    <!-- Feedback Stats -->
+                    <div class="feedback-stats" id="feedback-stats" style="display: none;">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <h4>Total Feedback</h4>
+                                <div class="stat-value" id="total-feedback">0</div>
+                                <div class="stat-label">All Time</div>
+                            </div>
+                            <div class="stat-card">
+                                <h4>Archived</h4>
+                                <div class="stat-value" id="archived-feedback">0</div>
+                                <div class="stat-label">Archived Feedback</div>
+                            </div>
+                            <div class="stat-card">
+                                <h4>This Month</h4>
+                                <div class="stat-value" id="monthly-feedback">0</div>
+                                <div class="stat-label">Current Month</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feedback Filters -->
+                    <div class="feedback-filters" id="feedback-filters" style="display: none;">
+                        <div class="filter-group">
+                            <label for="rating-filter">Rating:</label>
+                            <select id="rating-filter">
+                                <option value="all">All Ratings</option>
+                                <option value="5">5 Stars</option>
+                                <option value="4">4 Stars</option>
+                                <option value="3">3 Stars</option>
+                                <option value="2">2 Stars</option>
+                                <option value="1">1 Star</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="date-filter">Date Range:</label>
+                            <select id="date-filter">
+                                <option value="all">All Time</option>
+                                <option value="today">Today</option>
+                                <option value="week">This Week</option>
+                                <option value="month">This Month</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="status-filter">Status:</label>
+                            <select id="status-filter">
+                                <option value="all">All Status</option>
+                                <option value="read">Read</option>
+                                <option value="unread">Unread</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                        </div>
+                        <button class="filter-btn" onclick="applyFilters()">
+                            <i class="fas fa-filter"></i> Apply Filters
+                        </button>
+                        <button class="filter-btn" onclick="showArchivedFeedback()">
+                            <i class="fas fa-archive"></i> View Archived
+                        </button>
+                        <button class="filter-btn filter-btn-secondary" onclick="clearFilters()">
+                            <i class="fas fa-times"></i> Clear Filters
+                        </button>
+                    </div>
+
+                    <!-- Feedback Table Container -->
+                    <div id="feedback-table-container" style="display: none;">
+                        <table class="feedback-table">
+                            <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Rating</th>
+                                <th>Comment</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="feedback-table-body">
+                            <!-- Feedback will be populated here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Archived Feedback Container -->
+                    <div id="archived-feedback-container" style="display: none;">
+                        <div class="user-management-header">
+                            <h3>Archived Feedback</h3>
+                            <button class="filter-btn" id="show-active-btn" onclick="switchToActiveFeedback()">
+                                <i class="fas fa-arrow-left"></i> Back to Active Feedback
+                            </button>
+                        </div>
+                        <table class="feedback-table">
+                            <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Rating</th>
+                                <th>Comment</th>
+                                <th>Date Archived</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="archived-feedback-table-body">
+                            <!-- Archived feedback will be populated here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- No Feedback Message -->
+                    <div id="no-feedback-message" class="empty-state" style="display: none;">
+                        <i class="fas fa-comment-slash" style="font-size: 48px; margin-bottom: 16px; color: #ccc;"></i>
+                        <h3>No Feedback Yet</h3>
+                        <p>There is no user feedback to display at this time.</p>
+                    </div>
+
+                    <!-- Pagination Controls -->
+                    <div class="pagination-controls" id="feedback-pagination" style="display: none;">
+                        <button class="pagination-btn" onclick="changePage('prev')" id="prev-page">
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                        <span class="pagination-info" id="page-info">Page 1 of 1</span>
+                        <button class="pagination-btn" onclick="changePage('next')" id="next-page">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div class="page-section" id="settings-section" style="display: none;">
+                <div class="section-content">
+                    <h3>Settings</h3>
+                    <p>System settings will be implemented here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Password Edit Modal -->
+<div id="password-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Change Password</h3>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="password-form">
+                <input type="hidden" id="edit-user-id">
+                <div class="form-group">
+                    <label for="new-password">New Password</label>
+                    <input type="password" id="new-password" required minlength="8">
+                    <small>Password must be at least 8 characters long</small>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="closePasswordModal()">Cancel</button>
+                    <button type="submit" class="btn-save">Change Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Logout Confirmation Modal -->
+<div id="logout-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Confirm Logout</h3>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to logout?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" id="logout-cancel">Cancel</button>
+            <button class="btn-save" id="logout-confirm">Logout</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/dashboard.js"></script>
+</body>
+</html>
